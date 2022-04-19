@@ -7,7 +7,6 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
 '''
 ⚠️⚠️⚠️
 THIS FILE IS FOR DEVELOPMENT ONLY.
@@ -19,11 +18,10 @@ BEFORE USE:
 ⚠️⚠️⚠️
 '''
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'TO BE CHANGED'
@@ -31,8 +29,7 @@ SECRET_KEY = 'TO BE CHANGED'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['10.0.2.2', 'localhost', '127.0.0.1', '217.128.195.200','0.0.0.0','192.168.158.169']
 
 # Application definition
 INSTALLED_APPS = [
@@ -95,9 +92,7 @@ DATABASES = {
 }
 
 # Password validation
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend'
-]
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 # Token auth backend
 #TOKEN_CHECK_ACTIVE_USER = True
@@ -105,19 +100,22 @@ AUTHENTICATION_BACKENDS = [
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 LANGUAGE_CODE = 'fr-fr'
@@ -132,21 +130,16 @@ LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/members/'
 LOGOUT_REDIRECT_URL = LOGIN_URL
 
-
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_root')
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static', 'static_dirs'),
-)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static', 'static_dirs'), )
 
 if DEBUG:
     STATIC_PRECOMPILER_ROOT = os.path.join(BASE_DIR, 'static', 'static_dirs')
 
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
 MEDIA_URL = '/media/'
-
 
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'GMAIL_EMAIL'
@@ -157,16 +150,12 @@ EMAIL_HOST_USER = 'GMAIL_EMAIL'
 EMAIL_HOST_PASSWORD = 'GMAIL_PASSWORD'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-
 ADMINS = ['TO BE CHANGED']
-
 
 # Password reset validity duration
 PASSWORD_RESET_TIMEOUT_DAYS = 1  # en jours
 
-
 # Automatic session logout
 SESSION_COOKIE_AGE = 7200
-
 
 DEFAULT_TEMPLATE = "light"  # Default template, en minuscule

@@ -1,5 +1,6 @@
 import datetime
 import decimal
+from email.mime import image
 
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
@@ -35,7 +36,9 @@ class ShopCreate(LoginRequiredMixin, PermissionRequiredMixin, BorgiaFormView):
         shop = Shop.objects.create(
             name=form.cleaned_data['name'],
             description=form.cleaned_data['description'],
-            color=form.cleaned_data['color'])
+            color=form.cleaned_data['color'],
+            image=form.cleaned_data['image']
+            )
 
         self.shop = shop
         return super().form_valid(form)
@@ -71,11 +74,13 @@ class ShopUpdate(ShopMixin, BorgiaFormView):
         initial = super().get_initial()
         initial['description'] = self.shop.description
         initial['color'] = self.shop.color
+        initial['image'] = self.shop.image
         return initial
 
     def form_valid(self, form):
         self.shop.description = form.cleaned_data['description']
         self.shop.color = form.cleaned_data['color']
+        self.shop.image = form.cleaned_data['image']
         self.shop.save()
         return super().form_valid(form)
 

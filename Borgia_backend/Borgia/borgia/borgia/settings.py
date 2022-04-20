@@ -29,7 +29,7 @@ SECRET_KEY = 'TO BE CHANGED'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2', 'localhost', '127.0.0.1', '217.128.195.200','0.0.0.0','192.168.158.169','*']
+ALLOWED_HOSTS = ['*','127.0.0.1','10.0.2.2']
 
 # Application definition
 INSTALLED_APPS = [

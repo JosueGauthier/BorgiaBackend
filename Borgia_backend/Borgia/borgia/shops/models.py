@@ -1,4 +1,5 @@
 import decimal
+from email.mime import image
 
 from django.contrib.auth.models import Group
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
@@ -18,24 +19,33 @@ class Shop(models.Model):
 
     :param name: Display name, mandatory.
     :param description: Description, mandatory.
+    :param image: Image, mandatory.
     :param color: Color, mandatory.
     :type name: string
     :type description: string
     :type color: string
+    :type image: string
 
     :note:: Initial Django Permission (add, change, delete, view) are added.
     """
-    name = models.CharField('Code', max_length=255,
-                            validators=[RegexValidator(
-                                regex='^[a-z]+$',
-                                message="""Ne doit contenir que des lettres
+    name = models.CharField('Code',
+                            max_length=255,
+                            validators=[
+                                RegexValidator(
+                                    regex='^[a-z]+$',
+                                    message="""Ne doit contenir que des lettres
                                 minuscules, sans espace ni caractère
-                                spécial.""")])
+                                spécial.""")
+                            ])
     description = models.TextField('Description')
-    color = models.CharField('Couleur', max_length=255,
-                             validators=[RegexValidator(
-                                 regex='^#[A-Za-z0-9]{6}',
-                                 message='Doit être dans le format #F4FA58')])
+    color = models.CharField(
+        'Couleur',
+        max_length=255,
+        validators=[
+            RegexValidator(regex='^#[A-Za-z0-9]{6}',
+                           message='Doit être dans le format #F4FA58')
+        ])
+    image = models.TextField('imagelink')
 
     def __str__(self):
         """
@@ -49,14 +59,13 @@ class Shop(models.Model):
     def get_managers(self):
         try:
             chiefs_group = Group.objects.get(name='chiefs-' + self.name)
-            associates_group = Group.objects.get(
-                name='associates-' + self.name)
+            associates_group = Group.objects.get(name='associates-' +
+                                                 self.name)
         except ObjectDoesNotExist:
             raise ImproperlyConfigured(
                 '{0} is missing the related managers groups. You should verify the name of '
                 '{0} and/or the managers groups related'.format(
-                    self.__class__.__name__)
-            )
+                    self.__class__.__name__))
 
         managers = chiefs_group.user_set.union(associates_group.user_set.all())
         return managers
@@ -86,20 +95,25 @@ class Product(models.Model):
     UNIT_CHOICES = (('CL', 'cl'), ('G', 'g'))
 
     name = models.CharField('Nom', max_length=255)
-    unit = models.CharField('Unité', max_length=255,
-                            choices=UNIT_CHOICES, blank=True, null=True)
-    shop = models.ForeignKey(
-        Shop,
-        on_delete=models.CASCADE)
+    unit = models.CharField('Unité',
+                            max_length=255,
+                            choices=UNIT_CHOICES,
+                            blank=True,
+                            null=True)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     is_manual = models.BooleanField('Gestion manuelle du prix', default=False)
-    manual_price = models.DecimalField('Prix manuel', default=0,
-                                       decimal_places=2, max_digits=9,
-                                       validators=[
-                                           MinValueValidator(decimal.Decimal(0))])
-    correcting_factor = models.DecimalField('Facteur correcteur de ventes', default=1,
-                                            decimal_places=4, max_digits=9,
-                                            validators=[
-                                                MinValueValidator(decimal.Decimal(0))])
+    manual_price = models.DecimalField(
+        'Prix manuel',
+        default=0,
+        decimal_places=2,
+        max_digits=9,
+        validators=[MinValueValidator(decimal.Decimal(0))])
+    correcting_factor = models.DecimalField(
+        'Facteur correcteur de ventes',
+        default=1,
+        decimal_places=4,
+        max_digits=9,
+        validators=[MinValueValidator(decimal.Decimal(0))])
     is_active = models.BooleanField('Actif', default=True)
     is_removed = models.BooleanField('Retiré', default=False)
 
@@ -109,9 +123,8 @@ class Product(models.Model):
 
         :note:: Initial Django Permission (add, change, delete, view) are added.
         """
-        permissions = (
-            ('change_price_product', 'Can change price of a product'),
-        )
+        permissions = (('change_price_product',
+                        'Can change price of a product'), )
 
     def __str__(self):
         return self.name
@@ -159,7 +172,10 @@ class Product(models.Model):
             last_stockentry = self.stockentryproduct_set.order_by(
                 '-stockentry__datetime').first()
             if last_stockentry is not None:
-                return round(decimal.Decimal(last_stockentry.unit_price() * self.correcting_factor * decimal.Decimal(1 + margin_profit / 100)), 4)
+                return round(
+                    decimal.Decimal(
+                        last_stockentry.unit_price() * self.correcting_factor *
+                        decimal.Decimal(1 + margin_profit / 100)), 4)
             else:
                 return 0
         except IndexError:
@@ -170,7 +186,9 @@ class Product(models.Model):
         if automatic_price == 0:
             return 0
         else:
-            return round((self.manual_price - automatic_price) / automatic_price * 100, 4)
+            return round(
+                (self.manual_price - automatic_price) / automatic_price * 100,
+                4)
 
     def get_price(self):
         """
@@ -197,7 +215,7 @@ class Product(models.Model):
             if list_inventoryproduct is None:
                 return None
             else:
-                return list_inventoryproduct.order_by('-id')[0+offset]
+                return list_inventoryproduct.order_by('-id')[0 + offset]
         except IndexError:
             return None
 
@@ -213,7 +231,8 @@ class Product(models.Model):
         """
         try:
             return self.saleproduct_set.filter(
-                sale__datetime__gte=self.last_inventoryproduct(offset).inventory.datetime)
+                sale__datetime__gte=self.last_inventoryproduct(
+                    offset).inventory.datetime)
         except AttributeError:
             return self.saleproduct_set.all()
 
@@ -224,7 +243,8 @@ class Product(models.Model):
         try:
             last_inventory = self.last_inventoryproduct(
                 offset).inventory.datetime
-            return self.stockentryproduct_set.filter(stockentry__datetime__gte=last_inventory)
+            return self.stockentryproduct_set.filter(
+                stockentry__datetime__gte=last_inventory)
         except AttributeError:
             return self.stockentryproduct_set.all()
 
@@ -236,9 +256,10 @@ class Product(models.Model):
         """
         stock_base = self.last_inventoryproduct_value(offset)
         stock_input = sum(
-            se.quantity for se in self.stockentries_since_last_inventory(offset))
-        stock_output = sum(
-            s.quantity for s in self.sales_since_last_inventory(offset))
+            se.quantity
+            for se in self.stockentries_since_last_inventory(offset))
+        stock_output = sum(s.quantity
+                           for s in self.sales_since_last_inventory(offset))
         corrected_stock_output = stock_output * \
             decimal.Decimal(self.correcting_factor)
 
@@ -279,15 +300,15 @@ class Product(models.Model):
         It appends when ZeroDivisionError is raised.
         """
         stock_base = self.last_inventoryproduct_value(1)
-        stock_input = sum(
-            se.quantity for se in self.stockentries_since_last_inventory(1))
-        stock_output = sum(
-            s.quantity for s in self.sales_since_last_inventory(1))
+        stock_input = sum(se.quantity
+                          for se in self.stockentries_since_last_inventory(1))
+        stock_output = sum(s.quantity
+                           for s in self.sales_since_last_inventory(1))
 
         try:
             self.correcting_factor = decimal.Decimal(
-                (stock_base + stock_input - next_stock) / stock_output
-            )
+                (stock_base + stock_input - next_stock) / stock_output)
             self.save()
-        except (ZeroDivisionError, decimal.DivisionByZero, decimal.DivisionUndefined, decimal.InvalidOperation):
+        except (ZeroDivisionError, decimal.DivisionByZero,
+                decimal.DivisionUndefined, decimal.InvalidOperation):
             pass

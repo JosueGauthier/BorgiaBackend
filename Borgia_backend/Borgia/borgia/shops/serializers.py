@@ -23,7 +23,7 @@ from .models import Shop,Product
 class ShopSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Shop
-        fields = ('id','name', 'description','color')
+        fields = ('id','name', 'description','color','image')
 
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):

@@ -18,7 +18,6 @@ router.register(r'products', views.ProductFromShopViewSet)
 
 shops_patterns = [
     #API
-    #http://127.0.0.1:8000/shops/1/products/
     path('api-links/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),

@@ -11,15 +11,15 @@ from shops.views import (ProductCreate, ProductDeactivate, ProductList,
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 
-#router = routers.DefaultRouter()
-#router.register(r'shops', views.ShopViewSet)
-#router.register(r'all-products', views.ProductViewSet)
+router = routers.DefaultRouter()
+router.register(r'shops', views.ShopViewSet)
+router.register(r'products', views.ProductFromShopViewSet)
 #router.register(r'prod', views.ProductFromShopViewSet)
 
 shops_patterns = [
     #API
     #http://127.0.0.1:8000/shops/1/products/
-    #path('api-links/', include(router.urls)),
+    path('api-links/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),
     # SHOPS

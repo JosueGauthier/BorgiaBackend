@@ -2,16 +2,16 @@ import datetime
 import decimal
 from email.mime import image
 
+from borgia.views import BorgiaFormView, BorgiaView
+from configurations.utils import configuration_get
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse
-
-from borgia.views import BorgiaFormView, BorgiaView
-from configurations.utils import configuration_get
 from modules.models import CategoryProduct
 from sales.models import Sale
+
 from shops.forms import (ProductCreateForm, ProductListForm, ProductUpdateForm,
                          ProductUpdatePriceForm, ShopCheckupSearchForm,
                          ShopCreateForm, ShopUpdateForm)
@@ -466,10 +466,27 @@ class ProductUpdatePrice(ProductMixin, BorgiaFormView):
 
 #partie API 
 
-from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, viewsets
 
-from .serializers import ShopSerializer,ProductSerializer
-from .models import Shop,Product
+from .models import Product, Shop
+from .serializers import ProductSerializer, ShopSerializer
+
+
+""" class ProductList(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category', 'in_stock'] """
+
+
+class ProductFromShopViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all().order_by('name')
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['shop', 'name']
+    
+    
 
 
 class ShopViewSet(viewsets.ModelViewSet):

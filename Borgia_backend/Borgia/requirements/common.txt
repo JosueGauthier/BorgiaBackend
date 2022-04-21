@@ -3,3 +3,6 @@ django-bootstrap-form==3.4
 django-static-precompiler==1.8.2
 openpyxl==2.5.12
 Pillow
+django-filter
+djangorestframework
+django-utils-six

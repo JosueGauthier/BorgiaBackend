@@ -50,7 +50,12 @@ INSTALLED_APPS = [
     'sales',
     'stocks',
     'rest_framework',
+    'django_filters',
 ]
+
+""" REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+} """
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -159,3 +164,6 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1  # en jours
 SESSION_COOKIE_AGE = 7200
 
 DEFAULT_TEMPLATE = "light"  # Default template, en minuscule
+
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'

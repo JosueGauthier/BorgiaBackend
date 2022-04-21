@@ -1,5 +1,4 @@
 import decimal
-from email.mime import image
 
 from django.contrib.auth.models import Group
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
@@ -83,6 +82,7 @@ class Product(models.Model):
     :param is_removed: is the product removed.
     :param unit: unit of the product.
     :param correcting_factor: for automatic price.
+    :param product_image : image of the product, currently via Cloudinary
     :type name: string
     :type is_manual: bool
     :type manual_price: decimal
@@ -91,6 +91,7 @@ class Product(models.Model):
     :type is_removed: bool
     :type unit: string
     :type correcting_factor: decimal
+    :type product_image : string
     """
     UNIT_CHOICES = (('CL', 'cl'), ('G', 'g'))
 
@@ -116,6 +117,7 @@ class Product(models.Model):
         validators=[MinValueValidator(decimal.Decimal(0))])
     is_active = models.BooleanField('Actif', default=True)
     is_removed = models.BooleanField('Retiré', default=False)
+    product_image = models.CharField('Image', max_length=10000)
 
     class Meta:
         """

@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import HttpResponse, redirect, render
 from django.urls import reverse
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from borgia.utils import (get_members_group, human_unused_permissions,
                           get_permission_name_group_managing)
@@ -325,7 +325,7 @@ class UserDeactivateView(UserMixin, BorgiaView):
                 'url_user_retrieve',
                 kwargs={'user_pk': self.user.pk})
 
-        return redirect(force_text(success_url))
+        return redirect(force_str(success_url))
 
 
 class GroupUpdateView(GroupMixin, BorgiaFormView):

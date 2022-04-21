@@ -29,7 +29,7 @@ class ShopMixin(LoginRequiredMixin, PermissionRequiredMixin, ContextMixin):
     def add_shop_object(self):
         """
         Define shop object.
-        Raise Http404 is shop doesn't exist.
+        Raise Http404 if shop doesn't exist.
         """
         try:
             self.shop = Shop.objects.get(pk=self.kwargs['shop_pk'])

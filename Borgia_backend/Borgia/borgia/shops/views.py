@@ -480,4 +480,15 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by('name')
     serializer_class = ProductSerializer
 
+""" class ProductFromShopViewSet(viewsets.ModelViewSet):
+    #queryset = Product.objects.all().order_by('name')
+    queryset = Product.objects.filter(Shop.name == "pi").order_by('name')
+    serializer_class = ProductSerializer """
 
+
+
+""" from django_filters.rest_framework import DjangoFilterBackend
+
+class UserListView(generics.ListAPIView):
+    ...
+    filter_backends = [DjangoFilterBackend] """

@@ -388,3 +388,31 @@ def shift_category_orders(category,new_order):
     category.order = int(new_order)
     category.save()
 
+
+
+
+
+#partie API 
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets
+
+from .models import Category, CategoryProduct
+from .serializers import CategorySerializer, CategoryProductSerializer
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all().order_by('name')
+    serializer_class = CategorySerializer
+
+class ProductFromCategoryViewSet(viewsets.ModelViewSet):
+    queryset = CategoryProduct.objects.all()
+    serializer_class = CategoryProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category','product']
+
+#!non utilisé
+""" class CategoryProductViewSet(viewsets.ModelViewSet):
+    queryset = CategoryProduct.objects.all()
+    serializer_class = CategoryProductSerializer
+ """

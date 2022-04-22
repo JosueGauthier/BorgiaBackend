@@ -11,7 +11,10 @@ from shops.models import Product, Shop
 
 
 class Category(models.Model):
+    
     """
+    Catégorie présente dans le magasin
+
     :note:: Using generic foreign keys, filter api doesn't work. It doesn't
     work with ModelForm too.
     :note:: Should we use several category types here ? In order to use filter
@@ -26,6 +29,7 @@ class Category(models.Model):
     module = GenericForeignKey('content_type', 'module_id')
     products = models.ManyToManyField(Product, through='CategoryProduct')
     order = models.PositiveIntegerField(default=0)
+    category_image = models.CharField('Category image', max_length=10000)
 
     class Meta:
         """
@@ -33,8 +37,14 @@ class Category(models.Model):
         """
         default_permissions = ()
 
+    def __str__(self):
+        return self.name
+
 
 class CategoryProduct(models.Model):
+    """
+    Liste des produits associés à la categorie    
+    """
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
@@ -52,7 +62,7 @@ class CategoryProduct(models.Model):
         return self.product.name
 
     def get_price(self):
-        """
+        """        
         Return the price for the quantity.
         """
         try:

@@ -473,11 +473,9 @@ from .models import Product, Shop
 from .serializers import ProductSerializer, ShopSerializer
 
 
-""" class ProductList(generics.ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['category', 'in_stock'] """
+class ShopViewSet(viewsets.ModelViewSet):
+    queryset = Shop.objects.all().order_by('name')
+    serializer_class = ShopSerializer
 
 
 class ProductFromShopViewSet(viewsets.ModelViewSet):
@@ -486,26 +484,8 @@ class ProductFromShopViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['shop', 'name']
     
-    
 
-
-class ShopViewSet(viewsets.ModelViewSet):
-    queryset = Shop.objects.all().order_by('name')
-    serializer_class = ShopSerializer
-
+""" #! non utilisé fournis la liste de tous les produits
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by('name')
-    serializer_class = ProductSerializer
-
-""" class ProductFromShopViewSet(viewsets.ModelViewSet):
-    #queryset = Product.objects.all().order_by('name')
-    queryset = Product.objects.filter(Shop.name == "pi").order_by('name')
     serializer_class = ProductSerializer """
-
-
-
-""" from django_filters.rest_framework import DjangoFilterBackend
-
-class UserListView(generics.ListAPIView):
-    ...
-    filter_backends = [DjangoFilterBackend] """

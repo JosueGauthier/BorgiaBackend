@@ -18,9 +18,8 @@ router.register(r'products', views.ProductFromShopViewSet)
 
 shops_patterns = [
     #API
-    path('api-links/', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls',
-                              namespace='rest_framework')),
+    path('api-links/shops/', include(router.urls)),
+
     # SHOPS
     path(
         'shops/',

@@ -405,6 +405,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all().order_by('name')
+    serializer_class = CategorySerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['module_id']
+
 class ProductFromCategoryViewSet(viewsets.ModelViewSet):
     queryset = CategoryProduct.objects.all()
     serializer_class = CategoryProductSerializer

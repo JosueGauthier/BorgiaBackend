@@ -127,6 +127,10 @@ class ModuleCategoryCreateNameForm(forms.Form):
         required=True,
         help_text="L'ordre des catégories commence à partir de 0 !"
     )
+    category_image = forms.CharField(
+        label='Image de la catégorie',
+        max_length=10000
+    )
 
 
 class ShopModuleConfigForm(forms.Form):

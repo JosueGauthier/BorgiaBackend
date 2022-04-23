@@ -260,7 +260,8 @@ class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
                 name=cat_name_form.cleaned_data['name'],
                 order=cat_name_form.cleaned_data['order'],
                 module=self.module,
-                shop_id = self.shop.pk
+                shop_id = self.shop.pk,
+                category_image=cat_name_form.cleaned_data['category_image'],
                 
             )
             logger.error(self.shop.id)

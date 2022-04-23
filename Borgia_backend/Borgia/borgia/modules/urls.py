@@ -17,7 +17,6 @@ router = routers.DefaultRouter()
 router.register(r'category', views.CategoryViewSet)
 router.register(r'category-products', views.ProductFromCategoryViewSet)
 
-# http://localhost:8000/api-links-category/category-products/?category=13
 
 modules_patterns = [
 

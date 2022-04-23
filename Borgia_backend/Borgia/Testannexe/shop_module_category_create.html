@@ -34,63 +34,73 @@
         </div>
       {% endfor %}
       <button class="btn btn-success" type="submit">Valider</button>
+      <button onclick="call_counter('http://www.google.com');">
+        I update object 12345
+    </button>
     </form>
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.min.js"></script>
-
-<!--ce script permet bouton nouveau produit-->
 <script>
-  $('.category_formset').formset({
-    addText: 'Nouveau produit',
-    deleteText: 'Supprimer',
-    addCssClass: 'add-row btn btn-success btn-sm',
-    deleteCssClass: 'delete-row',
-    added: function(row) {
-      $(row).find('.selectpicker').each(function() {
-        $(this).selectpicker()
-      })
-      $(row).find('.quantity_unit').hide()
-      $("[id$='product']").change(function(e) {
-        if (e.target.value) {
-          var unit = e.target.value.split('/')[1]
-          if (unit !== 'None') {
-            $(this).closest('.row').find('.unit').html(unit)
-            $(this).closest('.row').find('.quantity_unit').show()
-            $(this).closest('.row').find('.quantity').attr('required', true)
-          } else {
-            $(this).closest('.row').find('.quantity_unit').hide()
-            $(this).closest('.row').find('.quantity').attr('required', false)
-          }
+$('.category_formset').formset({
+  addText: 'Nouveau produit',
+  deleteText: 'Supprimer',
+  addCssClass: 'add-row btn btn-success btn-sm',
+  deleteCssClass: 'delete-row',
+  added: function(row) {
+    $(row).find('.selectpicker').each(function() {
+      $(this).selectpicker()
+    })
+    $(row).find('.quantity_unit').hide()
+    $("[id$='product']").change(function(e) {
+      if (e.target.value) {
+        var unit = e.target.value.split('/')[1]
+        if (unit !== 'None') {
+          $(this).closest('.row').find('.unit').html(unit)
+          $(this).closest('.row').find('.quantity_unit').show()
+          $(this).closest('.row').find('.quantity').attr('required', true)
         } else {
           $(this).closest('.row').find('.quantity_unit').hide()
           $(this).closest('.row').find('.quantity').attr('required', false)
         }
-      })
-    }
-  })
-  </script>
-
-  <script>
-  $("[id$='product']").change(function(e) {
-    if (e.target.value) {
-      var unit = e.target.value.split('/')[1]
-      if (unit !== 'None') {
-        $(this).closest('.row').find('.unit').html(unit)
-        $(this).closest('.row').find('.quantity_unit').show()
-        $(this).closest('.row').find('.quantity').attr('required', true)
       } else {
         $(this).closest('.row').find('.quantity_unit').hide()
         $(this).closest('.row').find('.quantity').attr('required', false)
       }
+    })
+  }
+})
+</script>
+<script>
+$("[id$='product']").change(function(e) {
+  if (e.target.value) {
+    var unit = e.target.value.split('/')[1]
+    if (unit !== 'None') {
+      $(this).closest('.row').find('.unit').html(unit)
+      $(this).closest('.row').find('.quantity_unit').show()
+      $(this).closest('.row').find('.quantity').attr('required', true)
     } else {
       $(this).closest('.row').find('.quantity_unit').hide()
       $(this).closest('.row').find('.quantity').attr('required', false)
     }
-  })
-  $("[id$='product']").trigger('change')
-  </script>
+  } else {
+    $(this).closest('.row').find('.quantity_unit').hide()
+    $(this).closest('.row').find('.quantity').attr('required', false)
+  }
+})
+$("[id$='product']").trigger('change')
+</script>
 
+
+
+<script>
+  function call_counter(url, pk) {
+      window.open(url);
+      $.get('YOUR_VIEW_HERE/'+pk+'/', function (data) {
+          alert("counter updated!");
+      });
+  }
+</script>
 
 <style>
   .add-row {

@@ -1,4 +1,5 @@
 from functools import partial, wraps
+import logging
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -205,16 +206,19 @@ class ShopModuleConfigUpdateView(ShopModuleMixin, BorgiaFormView):
         return reverse('url_shop_module_config',
                        kwargs={'shop_pk': self.shop.pk, 'module_class': self.module_class})
 
-
+logger = logging.getLogger(__name__)
+#!!!!!!!!!!!!!!!
 class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
     """
     """
+    
     permission_required_self = 'modules.change_config_selfsalemodule'
     permission_required_operator = 'modules.change_config_operatorsalemodule'
     menu_type = 'shops'
     template_name = 'modules/shop_module_category_create.html'
 
     def __init__(self):
+        #logger.error(' __init__')
         super().__init__()
         self.shop = None
         self.module_class = None
@@ -229,7 +233,11 @@ class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
                 partial(ModuleCategoryCreateForm, shop=self.shop)), extra=1)
             return True
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):     
+        """
+        permet d'afficher la page de vente
+        """
+        logger.error('get')
         context = self.get_context_data(**kwargs)
         context['cat_form'] = self.form_class()
         context['cat_name_form'] = ModuleCategoryCreateNameForm(
@@ -237,13 +245,25 @@ class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
         return render(request, self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
+        """
+        Permet de publier la creation d'une nouvele catgerorie
+
+        cat_name_form => renvoie une objet from avec le nom et l'ordre entré
+        self.module => Module de vente en libre service du magasin Pi
+        """
+        logger.error(' post')
+        
         cat_name_form = ModuleCategoryCreateNameForm(request.POST)
+
         if cat_name_form.is_valid():
             category = Category.objects.create(
                 name=cat_name_form.cleaned_data['name'],
                 order=cat_name_form.cleaned_data['order'],
-                module=self.module
+                module=self.module,
+                shop_id = self.shop.pk
+                
             )
+            logger.error(self.shop.id)
 
         cat_form = self.form_class(request.POST)
         for product_form in cat_form.cleaned_data:
@@ -266,6 +286,14 @@ class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
+        """
+        Permet de ...
+
+        self.module_class => self_sales
+        self.shop.pk => affiche bien la pk du shop en question 
+        """
+        #logger.error(' get_success_url')
+        #logger.error(self.shop.pk)
         return reverse('url_shop_module_config',
                        kwargs={'shop_pk': self.shop.pk, 'module_class': self.module_class})
 
@@ -409,7 +437,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['module_id']
+    filterset_fields = ['module_id','shop_id']
 
 class ProductFromCategoryViewSet(viewsets.ModelViewSet):
     queryset = CategoryProduct.objects.all()

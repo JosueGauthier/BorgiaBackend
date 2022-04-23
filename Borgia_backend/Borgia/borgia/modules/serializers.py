@@ -7,7 +7,8 @@ from .models import CategoryProduct,Category
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
-        fields = ('id','name','module_id','products','order','category_image')
+        fields = ('id','name','module_id','products','order','category_image','shop_id')
+        
 
 
 

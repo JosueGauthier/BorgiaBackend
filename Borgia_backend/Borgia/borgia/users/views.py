@@ -663,3 +663,22 @@ def balance_from_username(request):
             return HttpResponseBadRequest()
     else:
         raise PermissionDenied
+
+
+
+
+#partie API 
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, viewsets
+
+from .models import User
+from .serializers import UserSerializer 
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id', 'username']
+    
+

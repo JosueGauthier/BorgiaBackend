@@ -1,6 +1,8 @@
 from . import views
 from django.urls import include, path
 
+from django.contrib import admin
+
 from rest_framework import routers
 
 from users.views import (GroupUpdateView, UserAddByListXlsxDownload,
@@ -18,7 +20,18 @@ router.register(r'users', views.UserViewSet)
 
 #http://localhost:8000/api-links/users/users/?username=josue
 
+
+
+
+
 users_patterns = [
+
+    #API-AUTH
+
+    path('api-links/profile/', views.ProfileView.as_view()),
+
+    #path('api-links/admin/', admin.site.urls),
+    path('api-links/login/', views.LoginView.as_view()),
 
     #API
     path('api-links/users/', include(router.urls)),

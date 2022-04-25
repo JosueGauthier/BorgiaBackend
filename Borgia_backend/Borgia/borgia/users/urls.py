@@ -15,6 +15,9 @@ from users.views import (GroupUpdateView, UserAddByListXlsxDownload,
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 
+
+#http://localhost:8000/api-links/users/users/?username=josue
+
 users_patterns = [
 
     #API

@@ -22,6 +22,7 @@ modules_patterns = [
 
     #API
     path('api-links/category/', include(router.urls)),
+    path('api-links/self-sale/', views.SelfSaleView.as_view()),
 
     path('shops/<int:shop_pk>/modules/', include([
         path('<str:module_class>/', include([

@@ -1,3 +1,14 @@
+from . import serializers
+from rest_framework.response import Response
+from rest_framework import views
+from rest_framework import status
+from rest_framework import permissions
+from rest_framework import generics
+from django.contrib.auth import login, logout
+from .serializers import CategorySerializer, CategoryProductSerializer
+from .models import Category, CategoryProduct
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
 from functools import partial, wraps
 import logging
 
@@ -19,6 +30,8 @@ from modules.models import Category, CategoryProduct, SelfSaleModule
 from sales.models import Sale, SaleProduct
 from shops.models import Product, Shop
 from users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 class ShopModuleSaleView(ShopModuleMixin, BorgiaFormView):
@@ -61,7 +74,6 @@ class ShopModuleSaleView(ShopModuleMixin, BorgiaFormView):
         self.add_context_objects()
         return PermissionRequiredMixin.has_permission(self)
 
-
     def get_menu_type(self):
         if self.module_class == "self_sales":
             return 'members'
@@ -88,6 +100,7 @@ class ShopModuleSaleView(ShopModuleMixin, BorgiaFormView):
         context['categories'] = self.module.categories.all().order_by('order')
         return context
 
+    #! Module de paiement
     def form_valid(self, form):
         """
         Create a sale and like all products via SaleProduct objects.
@@ -124,11 +137,11 @@ class ShopModuleSaleView(ShopModuleMixin, BorgiaFormView):
                         )
         sale.pay()
 
-
         context = self.get_context_data()
 
         if self.module.logout_post_purchase:
-            success_url = reverse('url_logout') + '?next=' + self.get_success_url()
+            success_url = reverse('url_logout') + \
+                '?next=' + self.get_success_url()
         else:
             success_url = self.get_success_url()
         context['sale'] = sale
@@ -206,12 +219,12 @@ class ShopModuleConfigUpdateView(ShopModuleMixin, BorgiaFormView):
         return reverse('url_shop_module_config',
                        kwargs={'shop_pk': self.shop.pk, 'module_class': self.module_class})
 
-logger = logging.getLogger(__name__)
+
 #!!!!!!!!!!!!!!!
 class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
     """
     """
-    
+
     permission_required_self = 'modules.change_config_selfsalemodule'
     permission_required_operator = 'modules.change_config_operatorsalemodule'
     menu_type = 'shops'
@@ -233,7 +246,7 @@ class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
                 partial(ModuleCategoryCreateForm, shop=self.shop)), extra=1)
             return True
 
-    def get(self, request, *args, **kwargs):     
+    def get(self, request, *args, **kwargs):
         """
         permet d'afficher la page de vente
         """
@@ -252,7 +265,7 @@ class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
         self.module => Module de vente en libre service du magasin Pi
         """
         logger.error(' post')
-        
+
         cat_name_form = ModuleCategoryCreateNameForm(request.POST)
 
         if cat_name_form.is_valid():
@@ -260,9 +273,9 @@ class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
                 name=cat_name_form.cleaned_data['name'],
                 order=cat_name_form.cleaned_data['order'],
                 module=self.module,
-                shop_id = self.shop.pk,
+                shop_id=self.shop.pk,
                 category_image=cat_name_form.cleaned_data['category_image'],
-                
+
             )
             logger.error(self.shop.id)
 
@@ -294,7 +307,7 @@ class ShopModuleCategoryCreateView(ShopModuleMixin, BorgiaView):
         self.shop.pk => affiche bien la pk du shop en question 
         """
         #logger.error(' get_success_url')
-        #logger.error(self.shop.pk)
+        # logger.error(self.shop.pk)
         return reverse('url_shop_module_config',
                        kwargs={'shop_pk': self.shop.pk, 'module_class': self.module_class})
 
@@ -325,7 +338,7 @@ class ShopModuleCategoryUpdateView(ShopModuleCategoryMixin, BorgiaView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         cat_form_data = [{'product': str(category_product.product.pk) + '/' +
-                                     str(category_product.product.get_unit_display()),
+                          str(category_product.product.get_unit_display()),
                           'quantity': category_product.quantity}
                          for category_product in self.category.categoryproduct_set.all()]
         context['cat_form'] = self.form_class(initial=cat_form_data)
@@ -338,7 +351,8 @@ class ShopModuleCategoryUpdateView(ShopModuleCategoryMixin, BorgiaView):
         if cat_name_form.is_valid():
             self.category.name = cat_name_form.cleaned_data['name']
             if cat_name_form.cleaned_data['order'] != self.category.order:
-               shift_category_orders(self.category,cat_name_form.cleaned_data['order'])
+                shift_category_orders(
+                    self.category, cat_name_form.cleaned_data['order'])
             self.category.save()
 
         cat_form = self.form_class(request.POST)
@@ -394,60 +408,125 @@ class ShopModuleCategoryDeleteView(ShopModuleCategoryMixin, BorgiaView):
                        kwargs={'shop_pk': self.shop.pk, 'module_class': self.module_class})
 
 
-def shift_category_orders(category,new_order):
+def shift_category_orders(category, new_order):
     module_id = category.module_id
     content_type_id = category.content_type_id
     order = category.order
     if new_order < order:
-       categories = Category.objects.filter(content_type_id=content_type_id,
-                                            module_id=module_id,
-                                            order__gte=new_order,order__lt=order)
-       if categories:
-          for cat in categories:
-              cat.order += 1
-              cat.save()
+        categories = Category.objects.filter(content_type_id=content_type_id,
+                                             module_id=module_id,
+                                             order__gte=new_order, order__lt=order)
+        if categories:
+            for cat in categories:
+                cat.order += 1
+                cat.save()
     elif new_order > order:
-       categories = Category.objects.filter(content_type_id=content_type_id,
-                                            module_id=module_id,
-                                            order__lte=new_order,order__gt=order)
-       if categories:
-          for cat in categories:
-              cat.order -= 1
-              cat.save()
+        categories = Category.objects.filter(content_type_id=content_type_id,
+                                             module_id=module_id,
+                                             order__lte=new_order, order__gt=order)
+        if categories:
+            for cat in categories:
+                cat.order -= 1
+                cat.save()
     category.order = int(new_order)
     category.save()
 
 
-
-
-
-#partie API 
-
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
-
-from .models import Category, CategoryProduct
-from .serializers import CategorySerializer, CategoryProductSerializer
+# partie API
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['module_id','shop_id']
+    filterset_fields = ['module_id', 'shop_id']
+
 
 class ProductFromCategoryViewSet(viewsets.ModelViewSet):
     queryset = CategoryProduct.objects.all()
     serializer_class = CategoryProductSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['category','product']
+    filterset_fields = ['category', 'product']
 
-#!non utilisé
-""" class CategoryProductViewSet(viewsets.ModelViewSet):
-    queryset = CategoryProduct.objects.all()
-    serializer_class = CategoryProductSerializer
- """
+
+def api_create_sale_view(saleMap):
+        """
+
+        api_operator = User.objects.get(pk=serializer.api_operator_pk)
+        api_sender = api_operator
+        api_recipient = User.objects.get(pk=1)
+        api_module = SelfSaleModule.objects.get(pk=serializer.api_module_pk)
+        api_shop = Shop.objects.get(pk=serializer.api_shop_pk)
+        api_ordered_quantity = serializer.api_ordered_quantity
+        api_category_product_id = serializer.api_category_product_id
+
+
+
+        """
+
+        a = saleMap['api_operator_pk']
+
+        api_operator = User.objects.get(pk=saleMap['api_operator_pk'])
+        api_sender = api_operator
+        api_recipient = User.objects.get(pk=1)
+        api_module = SelfSaleModule.objects.get(pk=saleMap['api_module_pk'])
+        api_shop = Shop.objects.get(pk=saleMap['api_shop_pk'])
+        api_ordered_quantity = saleMap['api_ordered_quantity']
+        api_category_product_id = saleMap['api_category_product_id']
+
+        sale = Sale.objects.create(
+            operator=api_operator,
+            sender=api_sender,
+            recipient=api_recipient,
+            module=api_module,
+            shop=api_shop
+        )
+
+        category_product = CategoryProduct.objects.get(
+            pk=api_category_product_id)
+
+        SaleProduct.objects.create(
+            sale=sale,
+            product=category_product.product,
+            #! category_product.quantity = volume ou poids par item |  ordered quantity
+            quantity=category_product.quantity * api_ordered_quantity,
+
+            price=category_product.get_price() * api_ordered_quantity
+        )
+        sale.pay()
+
+
+
+class SelfSaleView(views.APIView):
+    # This view should be accessible for authenticated users only.
+    permission_classes = (permissions.IsAuthenticated,)
+
+    """ def post(self, request, format=None):
+        serializer = serializers.SelfSaleSerializer(
+            data=self.request.data, context={'request': self.request})
+        serializer.api_create_sale()
+        #api_create_sale(serializer)
+        return Response(None, status=status.HTTP_202_ACCEPTED) """
+    def post(self, request, format=None):
+        serializer = serializers.SelfSaleSerializer(
+            data=self.request.data, context={'request': self.request})
+        serializer.is_valid(raise_exception=True)
+        saleL = serializer.validated_data['sale']
+        saleMap = serializer.validated_data
+        #serializer.save()
+        api_create_sale_view(saleMap)
+        #api_create_sale(serializer)
+        return Response(None, status=status.HTTP_202_ACCEPTED)
+
+
+    """ def post(self, request, format=None):
+        serializer = serializers.LoginSerializer(data=self.request.data, context={ 'request': self.request })
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return Response(None, status=status.HTTP_202_ACCEPTED) """

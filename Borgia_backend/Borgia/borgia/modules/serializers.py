@@ -45,16 +45,15 @@ class SelfSaleSerializer(serializers.Serializer):
 
     """
     This serializer defines  fields for self sales module :
-      * api_operator
-      * api_sender = api_operator
-      * api_recipient
-      * api_module
-      * api_shop
-      * api_ordered_quantity
-      * api_category_product_id
+        * api_operator
+        * api_sender = api_operator
+        * api_recipient
+        * api_module
+        * api_shop
+        * api_ordered_quantity
+        * api_category_product_id
 
     In views It will try to operate the sale method when validated.
-
 
         ? api_operator = User.objects.get(pk=7)
         ? api_sender = api_operator
@@ -64,8 +63,6 @@ class SelfSaleSerializer(serializers.Serializer):
         ? api_ordered_quantity = 3
         ? api_category_product_id= 82
     """
-
-    
 
     api_operator_pk = serializers.IntegerField(
         label="id user",
@@ -99,51 +96,6 @@ class SelfSaleSerializer(serializers.Serializer):
         api_ordered_quantity = attrs.get('api_ordered_quantity')
         api_category_product_id = attrs.get('api_category_product_id')
 
-        attrs['sale'] = [api_operator_pk,api_module_pk,api_shop_pk,api_ordered_quantity,api_category_product_id]
+        attrs['sale'] = [api_operator_pk, api_module_pk, api_shop_pk,
+                         api_ordered_quantity, api_category_product_id]
         return attrs
-
-    def api_create_sale(serializer):
-        """
-
-        api_operator = User.objects.get(pk=serializer.api_operator_pk)
-        api_sender = api_operator
-        api_recipient = User.objects.get(pk=1)
-        api_module = SelfSaleModule.objects.get(pk=serializer.api_module_pk)
-        api_shop = Shop.objects.get(pk=serializer.api_shop_pk)
-        api_ordered_quantity = serializer.api_ordered_quantity
-        api_category_product_id = serializer.api_category_product_id
-
-
-
-        """
-
-        a = serializer.api_operator_pk
-
-        api_operator = User.objects.get(pk=1)
-        api_sender = api_operator
-        api_recipient = User.objects.get(pk=1)
-        """ api_module = SelfSaleModule.objects.get(pk=serializer.api_module_pk)
-        api_shop = Shop.objects.get(pk=serializer.api_shop_pk)
-        api_ordered_quantity = serializer.api_ordered_quantity
-        api_category_product_id = serializer.api_category_product_id
-
-        sale = Sale.objects.create(
-            operator=api_operator,
-            sender=api_sender,
-            recipient=api_recipient,
-            module=api_module,
-            shop=api_shop
-        )
-
-        category_product = CategoryProduct.objects.get(
-            pk=api_category_product_id)
-
-        SaleProduct.objects.create(
-            sale=sale,
-            product=category_product.product,
-            #! category_product.quantity = volume ou poids par item |  ordered quantity
-            quantity=category_product.quantity * api_ordered_quantity,
-
-            price=category_product.get_price() * api_ordered_quantity
-        )
-        sale.pay() """

@@ -434,7 +434,6 @@ def shift_category_orders(category, new_order):
 
 # partie API
 
-
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
@@ -455,78 +454,54 @@ class ProductFromCategoryViewSet(viewsets.ModelViewSet):
 
 
 def api_create_sale_view(saleMap):
-        """
+    """
+    API permettant d'acheter un produit
 
-        api_operator = User.objects.get(pk=serializer.api_operator_pk)
-        api_sender = api_operator
-        api_recipient = User.objects.get(pk=1)
-        api_module = SelfSaleModule.objects.get(pk=serializer.api_module_pk)
-        api_shop = Shop.objects.get(pk=serializer.api_shop_pk)
-        api_ordered_quantity = serializer.api_ordered_quantity
-        api_category_product_id = serializer.api_category_product_id
+    """
 
+    a = saleMap['api_operator_pk']
 
+    api_operator = User.objects.get(pk=saleMap['api_operator_pk'])
+    api_sender = api_operator
+    api_recipient = User.objects.get(pk=1)
+    api_module = SelfSaleModule.objects.get(pk=saleMap['api_module_pk'])
+    api_shop = Shop.objects.get(pk=saleMap['api_shop_pk'])
+    api_ordered_quantity = saleMap['api_ordered_quantity']
+    api_category_product_id = saleMap['api_category_product_id']
 
-        """
+    sale = Sale.objects.create(
+        operator=api_operator,
+        sender=api_sender,
+        recipient=api_recipient,
+        module=api_module,
+        shop=api_shop
+    )
 
-        a = saleMap['api_operator_pk']
+    category_product = CategoryProduct.objects.get(
+        pk=api_category_product_id)
 
-        api_operator = User.objects.get(pk=saleMap['api_operator_pk'])
-        api_sender = api_operator
-        api_recipient = User.objects.get(pk=1)
-        api_module = SelfSaleModule.objects.get(pk=saleMap['api_module_pk'])
-        api_shop = Shop.objects.get(pk=saleMap['api_shop_pk'])
-        api_ordered_quantity = saleMap['api_ordered_quantity']
-        api_category_product_id = saleMap['api_category_product_id']
+    SaleProduct.objects.create(
+        sale=sale,
+        product=category_product.product,
+        #! category_product.quantity = volume ou poids par item |  ordered quantity
+        quantity=category_product.quantity * api_ordered_quantity,
 
-        sale = Sale.objects.create(
-            operator=api_operator,
-            sender=api_sender,
-            recipient=api_recipient,
-            module=api_module,
-            shop=api_shop
-        )
-
-        category_product = CategoryProduct.objects.get(
-            pk=api_category_product_id)
-
-        SaleProduct.objects.create(
-            sale=sale,
-            product=category_product.product,
-            #! category_product.quantity = volume ou poids par item |  ordered quantity
-            quantity=category_product.quantity * api_ordered_quantity,
-
-            price=category_product.get_price() * api_ordered_quantity
-        )
-        sale.pay()
-
+        price=category_product.get_price() * api_ordered_quantity
+    )
+    sale.pay()
 
 
 class SelfSaleView(views.APIView):
     # This view should be accessible for authenticated users only.
     permission_classes = (permissions.IsAuthenticated,)
 
-    """ def post(self, request, format=None):
-        serializer = serializers.SelfSaleSerializer(
-            data=self.request.data, context={'request': self.request})
-        serializer.api_create_sale()
-        #api_create_sale(serializer)
-        return Response(None, status=status.HTTP_202_ACCEPTED) """
     def post(self, request, format=None):
         serializer = serializers.SelfSaleSerializer(
             data=self.request.data, context={'request': self.request})
         serializer.is_valid(raise_exception=True)
         saleL = serializer.validated_data['sale']
         saleMap = serializer.validated_data
-        #serializer.save()
+        # serializer.save()
         api_create_sale_view(saleMap)
-        #api_create_sale(serializer)
+        # api_create_sale(serializer)
         return Response(None, status=status.HTTP_202_ACCEPTED)
-
-
-    """ def post(self, request, format=None):
-        serializer = serializers.LoginSerializer(data=self.request.data, context={ 'request': self.request })
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        return Response(None, status=status.HTTP_202_ACCEPTED) """

@@ -64,10 +64,10 @@ class SelfSaleSerializer(serializers.Serializer):
         ? api_category_product_id= 82
     """
 
-    api_operator_pk = serializers.IntegerField(
+    """ api_operator_pk = serializers.IntegerField(
         label="id user",
         write_only=True
-    )
+    ) """
 
     api_module_pk = serializers.IntegerField(
         label="id module",
@@ -90,12 +90,14 @@ class SelfSaleSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         # Take username and password from request
-        api_operator_pk = attrs.get('api_operator_pk')
+        #api_operator_pk = attrs.get('api_operator_pk')
         api_module_pk = attrs.get('api_module_pk')
         api_shop_pk = attrs.get('api_shop_pk')
         api_ordered_quantity = attrs.get('api_ordered_quantity')
         api_category_product_id = attrs.get('api_category_product_id')
 
-        attrs['sale'] = [api_operator_pk, api_module_pk, api_shop_pk,
+        #api_operator_pk,
+
+        attrs['sale'] = [ api_module_pk, api_shop_pk,
                          api_ordered_quantity, api_category_product_id]
         return attrs

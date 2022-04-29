@@ -1,3 +1,4 @@
+from users.serializers import LoginSerializer as LoginSerializer
 from . import serializers
 from rest_framework.response import Response
 from rest_framework import views
@@ -453,15 +454,13 @@ class ProductFromCategoryViewSet(viewsets.ModelViewSet):
     filterset_fields = ['category', 'product']
 
 
-def api_create_sale_view(saleMap):
+def api_create_sale_view(saleMap, api_user):
     """
     API permettant d'acheter un produit
 
     """
 
-    a = saleMap['api_operator_pk']
-
-    api_operator = User.objects.get(pk=saleMap['api_operator_pk'])
+    api_operator = api_user
     api_sender = api_operator
     api_recipient = User.objects.get(pk=1)
     api_module = SelfSaleModule.objects.get(pk=saleMap['api_module_pk'])
@@ -492,16 +491,24 @@ def api_create_sale_view(saleMap):
 
 
 class SelfSaleView(views.APIView):
-    # This view should be accessible for authenticated users only.
-    permission_classes = (permissions.IsAuthenticated,)
+
+    # This view should be accessible also for unauthenticated users.
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        serializer = serializers.SelfSaleSerializer(
+
+        serializerLogin = LoginSerializer(
             data=self.request.data, context={'request': self.request})
-        serializer.is_valid(raise_exception=True)
-        saleL = serializer.validated_data['sale']
-        saleMap = serializer.validated_data
-        # serializer.save()
-        api_create_sale_view(saleMap)
-        # api_create_sale(serializer)
+        serializerLogin.is_valid(raise_exception=True)
+        user = serializerLogin.validated_data['user']
+        login(request, user)
+        api_user = self.request.user
+        serializerSale = serializers.SelfSaleSerializer(
+            data=self.request.data, context={'request': self.request})
+        serializerSale.is_valid(raise_exception=True)
+        saleMap = serializerSale.validated_data
+        logger.error(saleMap)
+        
+
+        api_create_sale_view(saleMap, api_user)
         return Response(None, status=status.HTTP_202_ACCEPTED)

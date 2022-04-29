@@ -83,6 +83,7 @@ class ShopModuleSaleForm(forms.Form):
                                           'autofocus': 'true',
                                           'placeholder': "Nom d'utilisateur"}))
 
+
 class ModuleCategoryCreateForm(forms.Form):
     def __init__(self, *args, **kwargs):
         shop = kwargs.pop('shop')
@@ -123,7 +124,7 @@ class ModuleCategoryCreateNameForm(forms.Form):
     order = forms.IntegerField(
         label='Ordre',
         min_value=0,
-        validators=[MinValueValidator(0,'Cette valeur doit être positive')],
+        validators=[MinValueValidator(0, 'Cette valeur doit être positive')],
         required=True,
         help_text="L'ordre des catégories commence à partir de 0 !"
     )

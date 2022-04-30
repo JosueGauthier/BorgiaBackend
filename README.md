@@ -89,6 +89,9 @@ Cette partie ne doit pas être effectuée dans l'environnement virtuel.
 
 `su - postgres`
 
+
+https://phoenixnap.com/kb/how-to-install-postgresql-on-ubuntu
+
 La suite des commandes est a effectuer dans l'invite de commande postgres. `psql` permet d'activer l'invite et `\q` permet d'en sortir. Attention, toutes les commandes se terminent par un `;`.
 
 #### Création de la base de données

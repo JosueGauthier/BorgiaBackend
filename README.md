@@ -65,6 +65,9 @@ L'ensemble de l'installation se fait sur un serveur sous Linux. La distribution 
 
 ## Mise en place de l'environnement virtuel Python
 
+
+/!\ installation possible de venv l'utiliser dans ce cas la 
+
 #### Installation de `virtualenv`
 
 -   `pip3 install virtualenv virtualenvwrapper`
@@ -79,6 +82,8 @@ L'ensemble de l'installation se fait sur un serveur sous Linux. La distribution 
 ## Installation et configuration de la base de données
 
 Cette partie ne doit pas être effectuée dans l'environnement virtuel.
+
+
 
 #### Sélectionner l'utilisateur postgres
 

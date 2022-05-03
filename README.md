@@ -211,6 +211,9 @@ sudo tail -f /var/log/nginx/error.log
 https://www.datanovia.com/en/lessons/how-to-create-a-subdomain-on-digitalocean/
 
 
+https://www.datanovia.com/en/lessons/how-to-create-a-subdomain-on-digitalocean/
+https://stackoverflow.com/questions/53223914/issue-using-certbot-with-nginx
+
 
 Le fichiers suivants existent peut être déjà dans le dossier copié. Si c'est le cas, il suffit de les modifier.
 

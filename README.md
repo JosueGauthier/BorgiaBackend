@@ -208,6 +208,9 @@ https://stackoverflow.com/questions/11426087/nginx-error-conflicting-server-name
 sudo tail -f /var/log/nginx/error.log
 
 
+https://www.datanovia.com/en/lessons/how-to-create-a-subdomain-on-digitalocean/
+
+
 
 Le fichiers suivants existent peut être déjà dans le dossier copié. Si c'est le cas, il suffit de les modifier.
 

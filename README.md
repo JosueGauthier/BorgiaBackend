@@ -202,6 +202,9 @@ La commande dans l'environnement virtuel `python3 manage.py runserver 0.0.0.0:80
 
 # Fin de la configuration du serveur
 
+https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04-fr
+https://stackoverflow.com/questions/11426087/nginx-error-conflicting-server-name-ignored
+
 Le fichiers suivants existent peut être déjà dans le dossier copié. Si c'est le cas, il suffit de les modifier.
 
 #### Installation de nginx et wsgi

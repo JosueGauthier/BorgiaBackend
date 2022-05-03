@@ -207,11 +207,9 @@ https://stackoverflow.com/questions/11426087/nginx-error-conflicting-server-name
 
 sudo tail -f /var/log/nginx/error.log
 
+https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-server-blocks-virtual-hosts-on-ubuntu-16-04
+https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04-fr
 
-https://www.datanovia.com/en/lessons/how-to-create-a-subdomain-on-digitalocean/
-
-
-https://www.datanovia.com/en/lessons/how-to-create-a-subdomain-on-digitalocean/
 https://stackoverflow.com/questions/53223914/issue-using-certbot-with-nginx
 
 

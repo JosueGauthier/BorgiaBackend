@@ -229,6 +229,9 @@ Dans l'environnement virtuel :
 
 -   Copier le fichier `/borgia-app/Borgia/contrib/production/borgia_nginx.conf` dans `/borgia-app/Borgia/borgia`. Modifier les chemins si nécessaire et changer le nom de serveur "SERVEUR_NAME" qui correspond au domaine utilisé (par exemple `.borgia-app.com`).
 
+
+https://stackoverflow.com/questions/27624414/enabling-internal-routing-in-uwsgi
+
 -   Activer la configuration nginx en créant un lien symbolique :
 
 `ln -s /borgia-app/Borgia/borgia/borgia_nginx.conf /etc/nginx/sites-enabled/`

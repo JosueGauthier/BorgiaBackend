@@ -202,68 +202,22 @@ La commande dans l'environnement virtuel `python3 manage.py runserver 0.0.0.0:80
 
 # Fin de la configuration du serveur
 
-https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04-fr
-https://stackoverflow.com/questions/11426087/nginx-error-conflicting-server-name-ignored
-
-sudo tail -f /var/log/nginx/error.log
-
-https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-server-blocks-virtual-hosts-on-ubuntu-16-04
-https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04-fr
-
-https://stackoverflow.com/questions/53223914/issue-using-certbot-with-nginx
+- suivre tutoriel : https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-20-04-fr
 
 
-Le fichiers suivants existent peut être déjà dans le dossier copié. Si c'est le cas, il suffit de les modifier.
 
-#### Installation de nginx et wsgi
+ressources a utiliser si pblm 
 
-Dans l'environnement virtuel :
+- https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04-fr
+- https://stackoverflow.com/questions/11426087/nginx-error-conflicting-server-name-ignored
 
--   `pip3 install uwsgi`
+- sudo tail -f /var/log/nginx/error.log
 
--   Copier le fichier `/borgia-app/Borgia/contrib/production/borgia.wsgi` dans `/borgia-app/Borgia/borgia`. Le modifier si vous avez changer le répertoire de base.
+- https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-server-blocks-virtual-hosts-on-ubuntu-16-04
+- https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04-fr
 
--   Copier le fichier `/borgia-app/Borgia/contrib/production/wsgi.py` dans `/borgia-app/Borgia/borgia/borgia` (attention au sous-dossier ici).
+- https://stackoverflow.com/questions/53223914/issue-using-certbot-with-nginx
 
--   Copier le fichier `/borgia-app/Borgia/contrib/production/uwsgi_params` dans `/borgia-app/Borgia/borgia`.
-
--   Copier le fichier `/borgia-app/Borgia/contrib/production/borgia_nginx.conf` dans `/borgia-app/Borgia/borgia`. Modifier les chemins si nécessaire et changer le nom de serveur "SERVEUR_NAME" qui correspond au domaine utilisé (par exemple `.borgia-app.com`).
-
-
-https://stackoverflow.com/questions/27624414/enabling-internal-routing-in-uwsgi
-
--   Activer la configuration nginx en créant un lien symbolique :
-
-`ln -s /borgia-app/Borgia/borgia/borgia_nginx.conf /etc/nginx/sites-enabled/`
-
--   Redémarrer nginx :
-
-`service nginx restart`
-
-#### Test intermédiaire
-
-La commande `uwsgi --socket borgia.sock --module borgia.wsgi --chmod-socket=666` doit lancer le serveur sans problème (à condition d'avoir quelques modules python installés, le virtual env ne sera utilisé qu'ensuite). Si c'est le cas, c'est bientôt terminé !
-
-#### Suite et fin de la configuration de nginx
-
--   Copier le fichier `/borgia-app/Borgia/contrib/production/borgia_uwsgi.ini` dans `/borgia-app/Borgia/borgia`. Le modifier si vous avez changer le répertoire de base.
-
--   Ce fichier peut être testé avec la commande `uwsgi --socket borgia.sock --module borgia.wsgi --ini borgia_uwsgi.ini`
-
-#### Mode Empereur de nginx
-
-Ce mode permet à Nginx de gérer automatiquement et de manière dynamique le projet. La suite n'est pas à effectuer dans l'environnement virtuel.
-
--   `mkdir /etc/uwsgi`
--   `mkdir /etc/uwsgi/vassals`
--   `ln -s /borgia-app/Borgia/borgia/borgia_uwsgi.ini /etc/uwsgi/vassals/`
-
-#### Démarrer uwsgi au démarrage du serveur
-
-Dernier point, toujours en sudo en dehors de l'environnement virtuel.
-Ajoutez cette ligne à la fin du fichier (avant le `exit 0`) `/etc/rc.local`:
-
-`/usr/local/bin/uwsgi --emperor /etc/uwsgi/vassals`
 
 #### Sauvegarde dans git
 

@@ -1,0 +1,17 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=josue
+Group=www-data
+WorkingDirectory=/borgia-serv/Borgia/borgia
+ExecStart=/borgia-serv/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          borgia.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,32 @@
+server {
+    server_name b.j.to;
+
+    location /media  {
+        alias /borgia-serv/Borgia/borgia/static/media;
+    }
+
+    location /static {
+        alias /borgia-serv/Borgia/borgia/static/static_root;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+
+     # managed by Certbot
+    #SSL certif
+
+}
+server {
+    if ($host = b.j.to) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name b.j.to;
+    return 404; # managed by Certbot
+
+
+}

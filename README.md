@@ -1,15 +1,7 @@
-# BorgiaBackend
-
-<p align="center">
-   <img src="./img/borgia-logo-light.png" />
-</p>
+# BorgiaBackend : Installation prod avec NGINX et Gunicorn
 
 # Documentation - Installation
 
-Build : 5.1+
-Licence : [GNU GPL version 3](https://github.com/borgia-app/Borgia/blob/master/license.txt)
-
-# Statut : EN COURS DE MODIFICATION POUR FICHIERS DE CONFIG
 
 # Introduction
 
@@ -228,40 +220,9 @@ Enfin, il convient de sauvegarder l'ensemble de cette configuration sur une bran
 
 Il n'est pas recommandé de push cette branche car elle pourrait contenir des informations sensibles comme des clés et des mots de passe.
 
-# Début d'utilisation / TODO : A VERIFIER AVEC 5.1+
-
-## Création d'un utilisateur
-
-Le compte administrateur ne doit pas être utilisé lors de la production. Il permet simplement de créer un nouvel utilisateur réel et de lui donner les bonnes permissions.
-
--   Ainsi, connecter vous avec le nom d'utilisateur `admin` et le mot de passe **MOT_DE_PASSE_ADMIN** défini plus haut lors de la configuration.
-
--   Aller sur le groupe des présidents en cliquant sur `Groupes / Présidents` dans le menu latéral.
-
--   Aller dans `Utilisateurs / Nouveau` dans le menu latéral pour créer un nouvel utilisateur et remplir le formulaire. L'utilisateur présent sera désigné président, il convient donc de créer le vrai compte du président de l'association.
-
--   Cliquer sur `Gestion des groupes / Gestion président` et ajouter le compte nouvellement créer.
-
--   Le compte nouveau peut maintenant se connecter et avoir accès au groupe des présidents. Il peut désactiver le compte `admin` dans la liste des utilisateurs. De même, il peut ajouter d'autres utilisateurs et les ajouter aux bons groupes.
-
-## Création d'un magasin
-
-L'ensemble des magasins doivent être maintenant créés. Un seul exemple sera détaillé, mais il en est de même pour les autres.
-
--   Cliquer sur `Magasin / Nouveau` depuis l'interface du groupe des présidents et remplir le formulaire.
-
--   Par défaut, personne n'est chef ou associé du nouveau magasin. Il faut donc ajouter des utilisateurs à ces groupes (au moins au groupe des chefs du magasin). Les chefs pourront ensuite gérés eux-même les associés.
-
-## Paramètres d'utilisation
-
-### Divers
-
-En étant dans le groupe des présidents, aller dans le système de paramètres et modifier l'ensemble des informations qui vous semblent utiles.
 
 ### Lydia
 
 Les deux clés publique et privée `LYDIA_API_TOKEN` & `LYDIA_VENDOR_TOKEN` permettent d'identifier le compte auprès de Lydia. Ces informations sont obtenues en contactant le support de Lydia directement après avoir ouvert un compte professionnel chez eux.
-
-# TODO : VERIFIER ICI EN 5.1+
 
 De même, il faut changer les deux urls `LYDIA_CALLBACK_URL` et `LYDIA_CONFIRM_URL` en modifiant la première partie qui concerne uniquement le domaine (`borgia.iresam.org` par exemple). Attention, `LYDIA_CONFIRM_URL` doit être en `http` et Borgia fera automatiquement la redirection si SSL est activé, mais `LYDIA_CALLBACK_URL` **DOIT** être en `https` si SSL est activé !
